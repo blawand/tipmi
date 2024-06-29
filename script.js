@@ -1,4 +1,3 @@
-// script.js
 document.getElementById('tip-form').addEventListener('submit', function(event) {
     event.preventDefault();
     
@@ -7,15 +6,20 @@ document.getElementById('tip-form').addEventListener('submit', function(event) {
     let customPercentageInput = document.getElementById('custom-percentage').value;
     let customPercentage = customPercentageInput ? parseInt(customPercentageInput) : null;
     let result = document.getElementById('result');
-    let message = '';
+    let realTipElement = document.getElementById('real-tip');
+    let totalPriceElement = document.getElementById('total-price');
+    let seeMoreButton = document.getElementById('see-more');
+    let moreInfo = document.getElementById('more-info');
     let tipPercentage = customPercentage !== null ? customPercentage : percentage;
-    
-    if (event.submitter.id === 'calculate-4') {
-        tipPercentage = tipPercentage >= 4 ? 4 : tipPercentage;
-    }
 
+    let cappedTipPercentage = tipPercentage > 4 ? 4 : tipPercentage;
+
+    let cappedTip = price * (cappedTipPercentage / 100);
+    let realTip = price * (tipPercentage / 100);
+    let total = price + realTip;
+    
+    let message = '';
     if (tipPercentage >= 4) {
-        let tip = price * (tipPercentage / 100);
         if (tipPercentage >= 100) {
             message = 'Wow! You are incredibly generous!';
         } else if (tipPercentage >= 90) {
@@ -43,7 +47,7 @@ document.getElementById('tip-form').addEventListener('submit', function(event) {
         } else {
             message = 'Thank you!';
         }
-        result.textContent = `Tip: $${tip.toFixed(2)}. ${message}`;
+        result.textContent = `Tip: $${cappedTip.toFixed(2)}. ${message}`;
     } else {
         let criticism = '';
         if (tipPercentage === 0) {
@@ -56,5 +60,27 @@ document.getElementById('tip-form').addEventListener('submit', function(event) {
             criticism = '3% is pretty low. Consider being more generous.';
         }
         result.textContent = criticism;
+    }
+
+    realTipElement.textContent = `Real Tip: $${realTip.toFixed(2)}`;
+    totalPriceElement.textContent = `Total Price: $${total.toFixed(2)}`;
+    
+    seeMoreButton.style.display = 'block';
+});
+
+document.getElementById('custom-percentage').addEventListener('input', function() {
+    let customPercentage = document.getElementById('custom-percentage').value;
+    document.getElementById('percentage').disabled = customPercentage !== '';
+});
+
+document.getElementById('see-more').addEventListener('click', function() {
+    let moreInfo = document.getElementById('more-info');
+    let seeMoreButton = document.getElementById('see-more');
+    if (moreInfo.style.display === 'none') {
+        moreInfo.style.display = 'block';
+        seeMoreButton.textContent = 'See Less';
+    } else {
+        moreInfo.style.display = 'none';
+        seeMoreButton.textContent = 'See More';
     }
 });
